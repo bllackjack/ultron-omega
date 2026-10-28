@@ -5,8 +5,6 @@
   "type": "module",
   "description": "Art museum landing page with a deliberate performance bug, for demoing Lighthouse + React DevTools Profiler.",
   "scripts": {
-    "fetch-art": "node scripts/fetch-art.mjs",
-    "generate-art": "node scripts/generate-placeholder-art.mjs",
     "dev:server": "node --watch server/index.js",
     "dev:client": "vite",
     "dev": "concurrently -n api,web -c blue,magenta \"npm:dev:server\" \"npm:dev:client\"",
@@ -26,7 +24,6 @@
   "devDependencies": {
     "@vitejs/plugin-react": "^4.7.0",
     "concurrently": "^10.0.6",
-    "sharp": "^0.35.5",
     "vite": "^5.4.21"
   }
 }

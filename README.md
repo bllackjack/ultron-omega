@@ -13,12 +13,13 @@ Requires Node 18.18+.
 
 ```bash
 npm install
-npm run fetch-art      # downloads ~150 public-domain paintings from the Art Institute of Chicago (online, once)
-# or, offline:
-npm run generate-art   # generates 150 abstract placeholder paintings instead
 ```
 
-Art is stored in `server/public/art/` and `server/data/artworks.json` (git-ignored).
+Needs an internet connection. Artwork images are loaded straight from the
+[Art Institute of Chicago](https://api.artic.edu/docs/) image server (public
+domain, CC0). On first start the server fetches the list of ~150 artworks from
+their API and caches it in `server/data/artworks.json` (git-ignored; delete it
+to fetch a fresh list).
 
 ## Running
 
@@ -33,7 +34,6 @@ Art is stored in `server/public/art/` and `server/data/artworks.json` (git-ignor
 client/            React app (Vite root)
   src/components/  Header, Hero, Exhibitions, CollectionGallery, ArtworkCard, ArtworkModal, Footer
   src/lib/         curation ranking, date formatting
-server/            Express: /api/artworks, /api/exhibitions, /art/* images, serves client/dist in prod
-scripts/           fetch-art (real paintings) and generate-art (offline placeholders)
-demo/              fix.patch (2 lines), example Lighthouse before/after reports, presenter script
+server/            Express: /api/artworks, /api/exhibitions (data from the AIC API), serves client/dist in prod
+demo/              fix.patch (2 lines), presenter script
 ```

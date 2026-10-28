@@ -1,6 +1,5 @@
 node_modules/
 client/dist/
-# Downloaded/generated art is large; recreate with `npm run fetch-art` or `npm run generate-art`.
-server/public/art/
+# Artwork metadata cached from the Art Institute of Chicago API on first server start.
 server/data/artworks.json
 .DS_Store
