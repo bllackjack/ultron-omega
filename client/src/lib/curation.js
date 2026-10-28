@@ -1,8 +1,6 @@
 // "Curator's picks" ranking: artworks whose colour palettes harmonise with the
-// rest of the collection float to the top. Compares the key colours of every
-// artwork against every other artwork, in CIELAB space.
-
-const KEY_COLOURS = 2;
+// rest of the collection float to the top. Compares every palette colour of
+// every artwork against every other artwork, in CIELAB space.
 
 function srgbToLinear(c) {
   const v = c / 255;
@@ -31,16 +29,14 @@ function deltaE(a, b) {
 
 function harmony(paletteA, paletteB) {
   let total = 0;
-  const keysA = paletteA.slice(0, KEY_COLOURS);
-  const keysB = paletteB.slice(0, KEY_COLOURS);
-  for (const ca of keysA) {
-    for (const cb of keysB) {
+  for (const ca of paletteA) {
+    for (const cb of paletteB) {
       const d = deltaE(ca, cb);
       // Analogous (close) and complementary (far) colours both read as harmonious.
       total += Math.exp(-((d - 12) ** 2) / 200) + 0.5 * Math.exp(-((d - 70) ** 2) / 400);
     }
   }
-  return total / (keysA.length * keysB.length);
+  return total / (paletteA.length * paletteB.length);
 }
 
 export function rankByCuratorScore(artworks) {

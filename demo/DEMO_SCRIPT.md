@@ -6,7 +6,7 @@ The collection gallery is slow for two reasons. Each is fixed with **one line**.
 
 | File | Slow line | Problem |
 | --- | --- | --- |
-| `client/src/components/CollectionGallery.jsx` (line 26) | `const ranked = rankByCuratorScore(artworks);` | An expensive "Curator's picks" calculation (~60 ms) re-runs on **every** render. The gallery re-renders each time an image loads (to update the loading bar), so it runs 100+ times. |
+| `client/src/components/CollectionGallery.jsx` (line 26) | `const ranked = rankByCuratorScore(artworks);` | An expensive "Curator's picks" calculation (~300+ ms) re-runs on **every** render. The gallery re-renders each time an image loads (to update the loading bar), so it runs 100+ times. |
 | `client/src/components/ArtworkCard.jsx` (line 6) | `<img src={artwork.full} … />` | All 150 cards download the full-size (1686px) image from the museum's server right away, instead of the 400px thumbnail. |
 
 ## The fix (2 lines, also in `demo/fix.patch`)
@@ -51,6 +51,12 @@ Make the two edits above, or run `git apply demo/fix.patch`.
 ### 4. Re-test
 1. Profiler again: far fewer commits, and each one is cheap.
 2. `npm run prod`, Lighthouse in Incognito again, then **Save as JSON** as `after.json`.
+
+## What you should feel (before the fix)
+
+- While the paintings load, the page freezes over and over: scrolling stutters and clicks are delayed.
+- After loading, typing in the search box lags noticeably on every key.
+- After the fix, both are smooth.
 
 ## Notes
 
