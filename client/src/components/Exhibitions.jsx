@@ -10,7 +10,7 @@ export default function Exhibitions({ items }) {
       <ul className="exhibition-list">
         {items.map((ex) => (
           <li key={ex.slug} className="exhibition-card">
-            <img src={ex.artwork.full} alt="" />
+            <img src={ex.artwork.thumb} alt="" loading="lazy" />
             <div className="exhibition-body">
               <p className="eyebrow">{formatRange(ex.start, ex.end)}</p>
               <h3>{ex.title}</h3>

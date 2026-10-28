@@ -5,7 +5,7 @@ export default function Hero({ exhibition }) {
     <section className="hero" id="top" aria-labelledby="hero-title">
       <div className="hero-media">
         {exhibition && (
-          <img src={exhibition.artwork.full} alt={`${exhibition.artwork.title} by ${exhibition.artwork.artist}`} />
+          <img src={exhibition.artwork.medium} alt={`${exhibition.artwork.title} by ${exhibition.artwork.artist}`} />
         )}
       </div>
       <div className="hero-copy">

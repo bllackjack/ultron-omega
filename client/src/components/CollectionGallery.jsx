@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { rankByCuratorScore } from '../lib/curation.js';
 import ArtworkCard from './ArtworkCard.jsx';
 import LoadingBar from './LoadingBar.jsx';
@@ -11,11 +11,18 @@ const SORTS = {
   title: { label: 'Title A–Z', compare: (a, b) => a.title.localeCompare(b.title) },
 };
 
+function countBy(items, key) {
+  const counts = { All: items.length };
+  for (const item of items) counts[key(item)] = (counts[key(item)] ?? 0) + 1;
+  return counts;
+}
+
 export default function CollectionGallery({ artworks, loadedCount, onImageLoad, onSelect }) {
   const [query, setQuery] = useState('');
   const [period, setPeriod] = useState('All');
   const [sort, setSort] = useState('curated');
 
+  const periodCounts = useMemo(() => countBy(artworks, (a) => a.period), [artworks]);
   const ranked = rankByCuratorScore(artworks);
   const q = query.trim().toLowerCase();
   const visible = ranked.filter((a) =>
@@ -44,7 +51,7 @@ export default function CollectionGallery({ artworks, loadedCount, onImageLoad, 
         <div className="chips" role="group" aria-label="Filter by period">
           {PERIODS.map((p) => (
             <button key={p} className={p === period ? 'chip active' : 'chip'} aria-pressed={p === period} onClick={() => setPeriod(p)}>
-              {p}
+              {p} <span className="chip-count">{periodCounts[p] ?? 0}</span>
             </button>
           ))}
         </div>

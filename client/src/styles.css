@@ -77,6 +77,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 500; line-height: 1.1; marg
 .search { flex: 1 1 260px; }
 .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .chip { border: 1px solid var(--line); background: var(--paper); border-radius: 999px; padding: 0.35rem 0.85rem; font: inherit; font-size: 0.88rem; cursor: pointer; }
+.chip-count { opacity: 0.6; font-size: 0.8em; }
 .chip.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 .sort { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; }
 .sort select { padding: 0.45rem; border: 1px solid var(--line); border-radius: var(--radius); font: inherit; background: var(--paper); }
