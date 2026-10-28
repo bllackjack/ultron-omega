@@ -18,8 +18,9 @@ npm install
 Needs an internet connection. Artwork images are loaded straight from the
 [Art Institute of Chicago](https://api.artic.edu/docs/) image server (public
 domain, CC0). On first start the server fetches the list of ~150 artworks from
-their API and caches it in `server/data/artworks.json` (git-ignored; delete it
-to fetch a fresh list).
+their API and caches it in `server/data/aic-artworks.json` (git-ignored; delete it
+to fetch a fresh list). Images are relayed through the Express server
+(`/img/...`), because the museum's image server refuses images embedded on other sites.
 
 ## Running
 

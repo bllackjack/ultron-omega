@@ -1,5 +1,5 @@
 node_modules/
 client/dist/
 # Artwork metadata cached from the Art Institute of Chicago API on first server start.
-server/data/artworks.json
+server/data/*.json
 .DS_Store

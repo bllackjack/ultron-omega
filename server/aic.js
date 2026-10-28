@@ -1,13 +1,13 @@
 // Loads ~150 public-domain artworks from the Art Institute of Chicago API
-// (https://api.artic.edu/docs/). Images are NOT downloaded: the browser loads
-// them straight from the museum's IIIF image server, where the size is part of
-// the URL. The metadata is cached in server/data/artworks.json after the first run.
+// (https://api.artic.edu/docs/). Images are not stored locally: /img/:imageId/:width
+// relays them from the museum's IIIF image server, where the size is part of the
+// URL. The raw API records are cached in server/data/aic-artworks.json after the first run.
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const CACHE_FILE = path.join(__dirname, 'data/artworks.json');
+const CACHE_FILE = path.join(__dirname, 'data/aic-artworks.json');
 const TARGET = 150;
 const THEMES = [
   'impressionism', 'landscape', 'portrait', 'still life', 'japanese woodblock',
@@ -17,9 +17,11 @@ const FIELDS = [
   'id', 'title', 'artist_title', 'date_display', 'date_end', 'medium_display',
   'place_of_origin', 'image_id', 'short_description', 'is_public_domain', 'color', 'thumbnail',
 ].join(',');
-const HEADERS = { 'AIC-User-Agent': 'museum-perf-demo (Lighthouse/React Profiler demo)' };
+export const HEADERS = { 'AIC-User-Agent': 'museum-perf-demo (Lighthouse/React Profiler demo)' };
+export const IMAGE_WIDTHS = ['400', '843', '1686'];
 
-const iiif = (imageId, width) => `https://www.artic.edu/iiif/2/${imageId}/full/${width},/0/default.jpg`;
+export const iiifUrl = (imageId, width) => `https://www.artic.edu/iiif/2/${imageId}/full/${width},/0/default.jpg`;
+const imagePath = (imageId, width) => `/img/${imageId}/${width}`;
 
 function periodFor(year) {
   if (year == null) return 'Unknown';
@@ -62,9 +64,9 @@ function toArtwork(a) {
     credit: 'Art Institute of Chicago, CC0 Public Domain',
     width: a.thumbnail?.width ?? null,
     height: a.thumbnail?.height ?? null,
-    full: iiif(a.image_id, 1686),
-    large: iiif(a.image_id, 843),
-    thumb: iiif(a.image_id, 400),
+    full: imagePath(a.image_id, 1686),
+    large: imagePath(a.image_id, 843),
+    thumb: imagePath(a.image_id, 400),
     palette: paletteFrom(a.color),
   };
 }
@@ -84,22 +86,26 @@ async function fetchFromAic() {
   const found = new Map();
   for (const theme of THEMES) {
     for (const a of await search(theme)) {
-      if (a.image_id && a.is_public_domain && !found.has(a.id)) found.set(a.id, toArtwork(a));
+      if (a.image_id && a.is_public_domain && !found.has(a.id)) found.set(a.id, a);
     }
     if (found.size >= TARGET) break;
   }
   return [...found.values()].slice(0, TARGET);
 }
 
-export async function loadArtworks() {
+async function loadRecords() {
   try {
     return JSON.parse(await fs.readFile(CACHE_FILE, 'utf8'));
   } catch {
     console.log('Fetching artworks from the Art Institute of Chicago API (first run only)…');
-    const artworks = await fetchFromAic();
+    const records = await fetchFromAic();
     await fs.mkdir(path.dirname(CACHE_FILE), { recursive: true });
-    await fs.writeFile(CACHE_FILE, JSON.stringify(artworks, null, 2));
-    console.log(`Cached ${artworks.length} artworks in server/data/artworks.json`);
-    return artworks;
+    await fs.writeFile(CACHE_FILE, JSON.stringify(records, null, 2));
+    console.log(`Cached ${records.length} artworks in server/data/aic-artworks.json`);
+    return records;
   }
+}
+
+export async function loadArtworks() {
+  return (await loadRecords()).map(toArtwork);
 }
