@@ -43,7 +43,8 @@ app.get('/img/:imageId/:width', async (req, res) => {
     const upstream = await fetch(iiifUrl(imageId, width), { headers: HEADERS });
     if (!upstream.ok || !upstream.body) return res.sendStatus(upstream.status === 404 ? 404 : 502);
     res.set('Content-Type', upstream.headers.get('content-type') ?? 'image/jpeg');
-    res.set('Cache-Control', 'public, max-age=604800');
+    // No caching, so every reload re-downloads the paintings and the demo is repeatable.
+    res.set('Cache-Control', 'no-store');
     Readable.fromWeb(upstream.body).pipe(res);
   } catch (err) {
     console.warn(`Image ${imageId}/${width} failed: ${err.message}`);
